@@ -14,7 +14,7 @@ Executable xc-rpcgen
     filepath,
     directory,
     text,
-    HaXml == 1.20.2,
-    dbus-core == 0.8.*
+    HaXml == 1.25.*,
+    dbus-core == 0.9.*
   Main-Is: Main.hs
   GHC-Options: -O2 -fwarn-incomplete-patterns
