@@ -20,7 +20,7 @@
 module Backend.Camel where
 
 import Data.List
-import qualified Data.Text.Lazy as T
+import qualified Data.Text as T
 import qualified Data.Map as M
 import qualified DBus.Types as D
 import qualified DBus.Introspection as I
@@ -54,46 +54,46 @@ paramName :: I.Parameter -> String
 paramName (I.Parameter n _) = T.unpack n
 
 typeSig :: D.Type -> String
-typeSig D.DBusBoolean = "DBus.SigBool"
-typeSig D.DBusByte = "DBus.SigByte"
-typeSig D.DBusInt16 = "DBus.SigInt16"
-typeSig D.DBusInt32 = "DBus.SigInt32"
-typeSig D.DBusInt64 = "DBus.SigInt64"
-typeSig D.DBusWord16 = "DBus.SigUInt16"
-typeSig D.DBusWord32 = "DBus.SigUInt32"
-typeSig D.DBusWord64 = "DBus.SigUInt64"
-typeSig D.DBusDouble = "DBus.SigDouble"
-typeSig D.DBusString = "DBus.SigString"
-typeSig D.DBusObjectPath = "DBus.SigObjectPath"
-typeSig D.DBusSignature = "DBus.SigString"
-typeSig D.DBusVariant = "DBus.SigVariant"
-typeSig (D.DBusArray      elemT)      = "DBus.SigArray ("  ++ typeSig elemT ++ ")"
-typeSig (D.DBusStructure  elemTs)     = "DBus.SigStruct [" ++ (concat . intersperse ";" $ map typeSig elemTs) ++ "]"
-typeSig (D.DBusDictionary keyT elemT) = "DBus.SigDict (("  ++ typeSig keyT ++ "),(" ++ typeSig elemT ++ "))"
+typeSig D.TypeBoolean = "DBus.SigBool"
+typeSig D.TypeWord8 = "DBus.SigByte"
+typeSig D.TypeInt16 = "DBus.SigInt16"
+typeSig D.TypeInt32 = "DBus.SigInt32"
+typeSig D.TypeInt64 = "DBus.SigInt64"
+typeSig D.TypeWord16 = "DBus.SigUInt16"
+typeSig D.TypeWord32 = "DBus.SigUInt32"
+typeSig D.TypeWord64 = "DBus.SigUInt64"
+typeSig D.TypeDouble = "DBus.SigDouble"
+typeSig D.TypeString = "DBus.SigString"
+typeSig D.TypeObjectPath = "DBus.SigObjectPath"
+typeSig D.TypeSignature = "DBus.SigString"
+typeSig D.TypeVariant = "DBus.SigVariant"
+typeSig (D.TypeArray      elemT)      = "DBus.SigArray ("  ++ typeSig elemT ++ ")"
+typeSig (D.TypeStructure  elemTs)     = "DBus.SigStruct [" ++ (concat . intersperse ";" $ map typeSig elemTs) ++ "]"
+typeSig (D.TypeDictionary keyT elemT) = "DBus.SigDict (("  ++ typeSig keyT ++ "),(" ++ typeSig elemT ++ "))"
 
 arrayConstructor :: D.Type -> String -> String
 arrayConstructor elemT var_name =
     cons elemT
   where
     n = var_name
-    cons D.DBusBoolean = "DBus.Bools " ++ n
-    cons D.DBusByte    = "DBus.Bytes " ++ n
-    cons D.DBusInt16   = "DBus.Int16s " ++ n
-    cons D.DBusInt32   = "DBus.Int32s " ++ n
-    cons D.DBusInt64   = "DBus.Int64s " ++ n
-    cons D.DBusWord16  = "DBus.UInt16s " ++ n
-    cons D.DBusWord32  = "DBus.UInt32s " ++ n
-    cons D.DBusWord64  = "DBus.UInt64s " ++ n
-    cons D.DBusDouble  = "DBus.Doubles " ++ n
-    cons D.DBusString  = "DBus.Strings " ++ n
-    cons D.DBusObjectPath = "DBus.Strings " ++ n
-    cons D.DBusSignature  = "DBus.Strings " ++ n
-    cons D.DBusVariant    = "DBus.Variants " ++ n
-    cons (D.DBusStructure types) = printf "DBus.Structs (%s,%s)" siglist n
+    cons D.TypeBoolean = "DBus.Bools " ++ n
+    cons D.TypeWord8    = "DBus.Bytes " ++ n
+    cons D.TypeInt16   = "DBus.Int16s " ++ n
+    cons D.TypeInt32   = "DBus.Int32s " ++ n
+    cons D.TypeInt64   = "DBus.Int64s " ++ n
+    cons D.TypeWord16  = "DBus.UInt16s " ++ n
+    cons D.TypeWord32  = "DBus.UInt32s " ++ n
+    cons D.TypeWord64  = "DBus.UInt64s " ++ n
+    cons D.TypeDouble  = "DBus.Doubles " ++ n
+    cons D.TypeString  = "DBus.Strings " ++ n
+    cons D.TypeObjectPath = "DBus.Strings " ++ n
+    cons D.TypeSignature  = "DBus.Strings " ++ n
+    cons D.TypeVariant    = "DBus.Variants " ++ n
+    cons (D.TypeStructure types) = printf "DBus.Structs (%s,%s)" siglist n
                                    where siglist = concat . intersperse ";" . map typeSig $ types
-    cons (D.DBusArray elemT) = printf "DBus.Arrays (%s,%s)" (typeSig elemT) subarrays
+    cons (D.TypeArray elemT) = printf "DBus.Arrays (%s,%s)" (typeSig elemT) subarrays
                                where subarrays = n
-    cons (D.DBusDictionary keyT elemT) = printf "DBus.Dicts ((%s,%s),%s)" (typeSig keyT) (typeSig elemT) n
+    cons (D.TypeDictionary keyT elemT) = printf "DBus.Dicts ((%s,%s),%s)" (typeSig keyT) (typeSig elemT) n
 
 typeConstructor :: D.Type -> String ->  String
 typeConstructor typ var_name =
@@ -101,24 +101,24 @@ typeConstructor typ var_name =
   where
     n = var_name
 
-    cons D.DBusBoolean = "DBus.Bool " ++ n
-    cons D.DBusByte    = "DBus.Byte " ++ n
-    cons D.DBusInt16   = "DBus.Int16 " ++ n
-    cons D.DBusInt32   = "DBus.Int32 " ++ n
-    cons D.DBusInt64   = "DBus.Int64 " ++ n
-    cons D.DBusWord16  = "DBus.UInt16 " ++ n
-    cons D.DBusWord32  = "DBus.UInt32 " ++ n
-    cons D.DBusWord64  = "DBus.UInt64 " ++ n
-    cons D.DBusDouble  = "DBus.Double " ++ n
-    cons D.DBusString  = "DBus.String " ++ n
-    cons D.DBusObjectPath = "DBus.ObjectPath " ++ n
-    cons D.DBusSignature  = "DBus.String "  ++ n
-    cons D.DBusVariant    = "DBus.Variant " ++ n
-    cons (D.DBusStructure types)
+    cons D.TypeBoolean = "DBus.Bool " ++ n
+    cons D.TypeWord8    = "DBus.Byte " ++ n
+    cons D.TypeInt16   = "DBus.Int16 " ++ n
+    cons D.TypeInt32   = "DBus.Int32 " ++ n
+    cons D.TypeInt64   = "DBus.Int64 " ++ n
+    cons D.TypeWord16  = "DBus.UInt16 " ++ n
+    cons D.TypeWord32  = "DBus.UInt32 " ++ n
+    cons D.TypeWord64  = "DBus.UInt64 " ++ n
+    cons D.TypeDouble  = "DBus.Double " ++ n
+    cons D.TypeString  = "DBus.String " ++ n
+    cons D.TypeObjectPath = "DBus.ObjectPath " ++ n
+    cons D.TypeSignature  = "DBus.String "  ++ n
+    cons D.TypeVariant    = "DBus.Variant " ++ n
+    cons (D.TypeStructure types)
         = "DBus.Struct " ++ n
-    cons (D.DBusArray elemT)
+    cons (D.TypeArray elemT)
         = "DBus.Array " ++ "(" ++ arrayConstructor elemT n ++ ")"
-    cons t@(D.DBusDictionary keyT elemT)
+    cons t@(D.TypeDictionary keyT elemT)
         = "DBus.Array " ++ "(" ++ arrayConstructor t n ++ ")"
 
 typeConstructor' :: I.Parameter -> String
@@ -129,7 +129,7 @@ handlerStubs object (I.Interface iname methods _ _) =
     map stub methods
   where
     stub (I.Method name inparams outparams) =
-        let mname       = T.unpack $ D.strMemberName name
+        let mname       = T.unpack $ D.memberNameText name
             call_module = capitalise . decamelise $ object ++ "Methods"
             call_name   = replace "." "_" (interface ++ "_" ++ mname)
             call_args   = concat . intersperse " " . ("msg" :) . map get_pname $ inparams
@@ -159,7 +159,7 @@ handlerStubs object (I.Interface iname methods _ _) =
     reply_appends params = map append params
     append param  = "\t\t\t\tDBus.Message.append reply [" ++ typeConstructor' param ++ "];"
 
-    interface = T.unpack $ D.strInterfaceName iname
+    interface = T.unpack $ D.interfaceNameText iname
     get_pname (I.Parameter pname _) = T.unpack pname
 
 callStubs :: String -> I.Interface -> [String]
@@ -167,7 +167,7 @@ callStubs object (I.Interface iname methods _ _) =
     map stub methods
   where
     stub (I.Method name inparams outparams) =
-        let mname       = T.unpack $ D.strMemberName name
+        let mname       = T.unpack $ D.memberNameText name
             stub_name   = replace "." "_" (interface ++ "_" ++ mname)
             stub_args   = concat . intersperse " " . map paramName $ inparams
             call_args   = concat . intersperse "; " . map typeConstructor' $ inparams
@@ -188,7 +188,7 @@ callStubs object (I.Interface iname methods _ _) =
     outConstructors pms = map constructor (zip (paramTypes pms) outnames)
                           where constructor (typ,name) = typeConstructor typ name
 
-    interface = T.unpack $ D.strInterfaceName iname
+    interface = T.unpack $ D.interfaceNameText iname
         
 genServer_ :: Input -> IO Output
 genServer_ input =
@@ -204,7 +204,7 @@ genServer_ input =
                    $ lookupTemplate serverMLFileTemplate input
 
     quoted_introspect_xml = replace "\"" "\\\"" (xml input)
-    interface_name (I.Interface n _ _ _) = T.unpack $ D.strInterfaceName n
+    interface_name (I.Interface n _ _ _) = T.unpack $ D.interfaceNameText n
     interface = head interfaces
     interfaces = let Just intro_obj = I.fromXML "/" (T.pack (xml input))
                      (I.Object _ ifs _) = intro_obj

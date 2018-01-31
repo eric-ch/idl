@@ -69,7 +69,7 @@ type Problem = String
 
 checkXML ::String -> Maybe Problem
 checkXML xml =
-    case I.fromXML "/" (T.pack xml) of
+    case I.fromXML "/" (T.toStrict $ T.pack xml) of
       Nothing  -> Just "failed to parse interface specification XML"
       Just obj -> Nothing
 

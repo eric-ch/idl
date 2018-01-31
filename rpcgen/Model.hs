@@ -123,22 +123,22 @@ propertySetter prop =
 
 remotePropertyGetter :: Property -> Method
 remotePropertyGetter prop =
-    Method "Get" [Parameter "interface" D.DBusString, Parameter "property" D.DBusString] [Parameter "value" D.DBusVariant]
+    Method "Get" [Parameter "interface" D.TypeString, Parameter "property" D.TypeString] [Parameter "value" D.TypeVariant]
 
 remotePropertySetter :: Property -> Method
 remotePropertySetter prop = 
-    Method "Set" [Parameter "interface" D.DBusString, Parameter "property" D.DBusString, Parameter "value" D.DBusVariant] []
+    Method "Set" [Parameter "interface" D.TypeString, Parameter "property" D.TypeString, Parameter "value" D.TypeVariant] []
 
 
 orgFreedesktopDBusProperties :: Interface
 orgFreedesktopDBusProperties =
-    Interface { interfaceName = "org.freedesktop.DBus.Properties"
+    Interface { Model.interfaceName = "org.freedesktop.DBus.Properties"
               , interfaceSignals = []
               , interfaceProperties = []
               , interfaceMethods =
-                  [ Method "Get"    [Parameter "interface" D.DBusString, Parameter "property" D.DBusString] [Parameter "value" D.DBusVariant]
-                  , Method "Set"    [Parameter "interface" D.DBusString, Parameter "property" D.DBusString, Parameter "value" D.DBusVariant] []
-                  , Method "GetAll" [Parameter "interface" D.DBusString] [Parameter "properties" (D.DBusDictionary D.DBusString D.DBusVariant)]
+                  [ Method "Get"    [Parameter "interface" D.TypeString, Parameter "property" D.TypeString] [Parameter "value" D.TypeVariant]
+                  , Method "Set"    [Parameter "interface" D.TypeString, Parameter "property" D.TypeString, Parameter "value" D.TypeVariant] []
+                  , Method "GetAll" [Parameter "interface" D.TypeString] [Parameter "properties" (D.TypeDictionary D.TypeString D.TypeVariant)]
                   ]
               }
 
@@ -177,7 +177,7 @@ parseMethod e = do
   return $ Method name inps outs
   where
     argelems = childElemsWith (X.tag "arg") e
-    outelems = childElemsWith (X.tag "arg" `o` X.attrval ("direction", X.AttValue [Left "out"])) e
+    outelems = childElemsWith (X.tag "arg" `o` X.attrval (X.N "direction", X.AttValue [Left "out"])) e
     inpelems = filter p argelems where
                 p e = case attr "direction" e of
                         Nothing   -> True
@@ -213,7 +213,7 @@ parseAccess _ = Nothing
 
 parseType :: String -> Maybe D.Type
 parseType s = do
-  typsig <- D.mkSignature (TL.pack s)
+  typsig <- D.signature . TL.toStrict . TL.pack $ s
   case D.signatureTypes typsig of
     [t] -> Just t
     _   -> Nothing
@@ -233,4 +233,4 @@ childElemsWith fil (X.Elem _ _ contents) =
       select _ = Nothing
     
 attr :: String -> X.Element i -> Maybe String
-attr name (X.Elem n attrs _) = show <$> lookup name attrs
+attr name (X.Elem n attrs _) = show <$> lookup (X.N name) attrs
