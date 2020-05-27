@@ -183,7 +183,6 @@
       <tp:docstring>Extra xenvm arguments, separated by semicolons.</tp:docstring>
     </property>
     <property name="flask-label" type="s" access="readwrite"/>
-    <property name="gpu" type="s" access="readwrite"/>
     <property name="greedy-pciback-bind" type="b" access="readwrite">
       <tp:docstring>Bind passthrough pci devices to pciback early, to prevent their use by other VMs.</tp:docstring>
     </property>
@@ -606,7 +605,6 @@
       <tp:docstring>Extra xenvm arguments separated by semicolon.</tp:docstring>
     </property>
     <property name="flask-label" type="s" access="readwrite"/>
-    <property name="gpu" type="s" access="readwrite"/>
     <property name="greedy-pciback-bind" type="b" access="readwrite">
       <tp:docstring>Bind passthrough pci devices to pciback early, to prevent their use by other VMs.</tp:docstring>
     </property>
